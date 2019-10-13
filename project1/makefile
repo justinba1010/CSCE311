@@ -24,5 +24,7 @@ project2.o : project2.cc
 	$(COMPILE) $<
 project2 : project2.o
 	$(LINK) $@ $^
-all: server client
-	./server $(SOCKET)& ./client $(SOCKET)&
+project2-new.o : project2-new.cc
+	$(COMPILE) $<
+project2-new : project2-new.o
+	$(LINK) $@ $^
