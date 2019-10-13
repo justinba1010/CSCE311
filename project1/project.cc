@@ -10,6 +10,7 @@
 #include <vector>
 #include <locale>
 #include <string>
+#include <sys/wait.h>
 
 using namespace std;
 
