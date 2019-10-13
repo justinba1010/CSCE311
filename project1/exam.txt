@@ -1,0 +1,16 @@
+1. Process state transition graph; what triggers each transition
+2. Protection rings
+3. ZOmbie Process
+4. Process vs thread
+5. MFQ => Round Robin
+6. Name all IPC methods for data passing
+  shared memory
+7. How is a keystroke handled?
+8, Process Switch
+  8a. Mode switch User->Kernel->User
+9. Interrupts, exceptions, signals.
+10. Lock(); Unlock(); // Implements with hardware.
+11. How to implement shell?
+12. Resolve all the synchronization questions in the required reading:
+  A Little Book of Semaphores
+13. How to deal with deadlocks
