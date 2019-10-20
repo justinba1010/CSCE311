@@ -19,24 +19,24 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <stdio.h>
+#include <sys/shm.h>
 // 4 MB of RAM
 #define SIZE 4194304
 
 using namespace std;
 
+
 void fthread(int start, int end, char *sharedmemory) {
-  cout << "Hello" << endl;
   int x = start;
   while (x < end) {
-    printf("%c", sharedmemory[x]);
+    sharedmemory[x] += 3;
+    ++x;
   }
 }
 
 int main(int argc, char* argv[]) {
   sem_t *sema;
   sema = sem_open("sema", O_CREAT, 0644, 0);
-  cout << O_CREAT << endl;
-
   key_t key1 = ftok("sharedmemoryfile1", 65);
 
   if(!fork()) { /* Child */
@@ -60,14 +60,19 @@ int main(int argc, char* argv[]) {
         i++;
         x = sharedmemory[i];
       }
+      thread t1(fthread, start, end, sharedmemory);
+      t1.join();
       if (x != 0) {
         end = i;
-        thread t(fthread, start, end, sharedmemory);
-        t.join();
-        // Move past control character
         start = end + 1;
         i++;
       }
+    }
+    x = start; //remove warning when debugging
+    char *e = sharedmemory;
+    while (*e != '\0') {
+      cout << *e;
+      ++e;
     }
         
   } else { /* Parent */

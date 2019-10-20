@@ -18,7 +18,7 @@ $COMPILER -Wall -std=c++11 -o project project.o
 
 ## Output
 
-It will output each line in the file that contains the keyword in ASCII encoding. I did not have enough time to write the alphabeticalization.
+It will output each line in the file that contains the keyword in ASCII encoding and in alphabetical order.
 
 ## Notes
 

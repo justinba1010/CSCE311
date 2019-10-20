@@ -11,6 +11,7 @@
 #include <locale>
 #include <string>
 #include <sys/wait.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -90,12 +91,21 @@ int main(int argc, char* argv[])
           cout << "Error opening file" << endl;
           exit(1);
         }
-
+        vector<string> sorty;
+        string stringy;
         do {
           read(sv[0], &buf, 1);
-          if(buf == 1) cout << endl;
-          else cout << buf;
+          if(buf == 1) {
+            sorty.push_back(stringy);
+            stringy = "";
+          } else {
+            stringy = stringy + buf;
+          }
         } while (buf);
+        sort(sorty.begin(), sorty.end());
+        for(string s : sorty) {
+          cout << s << endl;
+        }
         wait(NULL); /* wait for child to die */
     }
 

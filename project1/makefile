@@ -32,4 +32,4 @@ project2-new : project2-new.o
 	$(LINK) $@ $^
 project2-linux :
 	$(COMPILE_LINUX) project2-new.cc
-	g++ $(FLAGS2) -o project2-new project2-new.o
+	$(LINK)  project2-new project2-new.o
