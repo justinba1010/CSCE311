@@ -25,13 +25,30 @@
 
 using namespace std;
 
+bool checkStringForKeyword(string *line, string *keyword);
 
-void fthread(int start, int end, char *sharedmemory) {
-  int x = start;
-  while (x < end) {
-    sharedmemory[x] += 3;
-    ++x;
+void fthread(int start, int end, char *sharedmemory, char *keyword) {
+  string *s;
+  memcpy(s, sharedmemory, end-start);
+  if (!checkStringForKeyword(s, keyword)) {
+    memset(sharedmemory+start, 2, end-start);
   }
+}
+
+bool checkStringForKeyword(char *line2, char *keyword2) {
+  string line;
+  string keyword;
+  strcpy(line, line2);
+  strcpy(keyword, keyword2);
+  int pos = line.find(keyword);
+  //cout << pos << endl;
+  if (pos < 0) return false;
+  if (pos == 0 && !isalpha(line.at(pos + keyword.length())))
+    return true;
+  if (pos == 0) return false;
+  if (!isalpha(line.at(pos-1)) && !isalpha(line.at(pos + keyword.length())))
+    return true;
+  return false;
 }
 
 int main(int argc, char* argv[]) {
@@ -45,6 +62,7 @@ int main(int argc, char* argv[]) {
     cout << shmid1 << endl;
     char *sharedmemory = (char*)shmat(shmid1, (void*)0, SIZE);
     char x = sharedmemory[0];
+    char *keyword = argv[2];
     int i = 0;
     while (x != 0) {
       //cout << x;
@@ -60,7 +78,7 @@ int main(int argc, char* argv[]) {
         i++;
         x = sharedmemory[i];
       }
-      thread t1(fthread, start, end, sharedmemory);
+      thread t1(fthread, start, end, sharedmemory, keyword);
       t1.join();
       if (x != 0) {
         end = i;
@@ -83,6 +101,24 @@ int main(int argc, char* argv[]) {
     file.read(sharedmemory, SIZE);
     sem_post(sema);
     wait(NULL);
+    vector<string> sorty;
+    char *x = sharedmemory;
+    int length = 0;
+    while (*x != 0) {
+      char* stringy;
+      if (*x == 1) { //New line
+        char stringycpy[length];
+        for(int i = (x-sharedmemory)-length; i < length; i++) {
+          stringycpy[i] = *(x-length+i);
+        }
+        strcpy(stringy, stringycpy);
+        length = 0;
+      }
+      if (*x == 2) {
+        length = 0;
+      }
+      x++;
+    }
     shmctl(shmid1, IPC_RMID, NULL);
   }
 }

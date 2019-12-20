@@ -10,6 +10,12 @@ $COMPILER -Wall -std=c++11 -c project.cc
 $COMPILER -Wall -std=c++11 -o project project.o
 ```
 
+or
+
+```
+make project
+```
+
 ## Usage
 
 ```
