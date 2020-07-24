@@ -1,0 +1,3 @@
+# Hadoop
+
+Hadoop is an open source project maintained by Apache that is designed for distributed and parallel data processing. Originally Hadoop was a very efficient and remarkable way to do map-reduce, and distributed file systems, but nowadays according to [Tech Target](https://searchdatamanagement.techtarget.com/definition/Hadoop), has grown into a bundle of big data technology used for machine learning, predictive analysis and many other fields. However originally, Hadoop was used for distributed and parallel map reduce. A large data set would be first processed in, and then split among many large data clusters, and then parallelized into many threads and/or processes depending on use case. 

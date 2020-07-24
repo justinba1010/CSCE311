@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <fstream>
+#include <iostream>
+#include <sys/socket.h>
+#include <vector>
+#include <locale>
+#include <string>
+#include <thread>
+#include <semaphore.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#define SIZE 1024000
+
+using namespace std;
+
+int main(int argc, char* argv[]) {
+  sem_t *sem1, *sema;
+  sem1 = sem_open("sem1", O_CREAT, 0644, 0);
+  sema = sem_open("sema", O_CREAT, 0644, 0);
+
+  key_t key1 = ftok("sharedmemoryfile1", 65);
+  key_t key2 = ftok("s2", 63);
+
+  if(!fork()) { /* Child */
+    sem_wait(sema);
+    int shmid1 = shmget(key1, sizeof(int), 0666 | IPC_CREAT);
+    int *sharedmemory = (int*)shmat(shmid1, (void*)0, sizeof(int));
+    //cout << sharedmemory << endl;
+    //cout << *sharedmemory << endl;
+    sem_post(sem1);
+    sem_wait(sema);
+    int size = *sharedmemory;
+    size += 4-(size % 4);
+    cout << size << endl;
+    int shmid2 = shmget(key2, SIZE, 0666 | IPC_CREAT);
+    if(shmid2 == -1) {
+      cout << "Error allocating memory" << endl;
+      //exit(1);
+    }
+    //char *sharedmemory2 = (char*)shmat(shmid2, (void*)0, (*sharedmemory)+1);
+    //sleep(1);
+    //cout << "Here" << endl;
+    cout << "Here" << endl;
+    sem_post(sem1);
+    //cout << sharedmemory2[0] << endl;
+    //cout << sharedmemory2 << endl;
+  } else { /* Parent */
+    ifstream file(argv[1]);
+    struct stat st;
+    int x = stat(argv[1], &st);
+    //if (x == -1) kill(0, SIGHUP);
+    int shmid1 = shmget(key1, sizeof(int), 0666 | IPC_CREAT);
+    int *sharedmemory = (int*)shmat(shmid1, (void*)0, sizeof(int));
+    *sharedmemory = st.st_size;
+    sleep(1);
+    //cout << "parent: " << sharedmemory << endl;
+    //cout << "parent: " << *sharedmemory << endl;
+    sem_post(sema);
+    sem_wait(sem1);
+    int size = *sharedmemory;
+    size += 4-(size % 4);
+    cout << size << endl;
+    int shmid2 = shmget(key2, SIZE, 0666 | IPC_CREAT);
+    if(shmid2 == -1) {
+      cout << "Error allocating memory" << endl;
+      //exit(1);
+    }
+    //char *sharedmemory2 = (char*)shmat(shmid2, (void*)0, (*sharedmemory) + 1);
+    //memset(sharedmemory2, 'x', *sharedmemory);
+    sleep(1);
+    sem_post(sema);
+    wait(NULL);
+  }
+}

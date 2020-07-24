@@ -1,0 +1,3 @@
+# Map Reduce
+
+Map reduce is incredibly useful for processing large amounts of data. It is a way to split data for multiple threads or processes, and in the case of Hadoop, multiple processors, so that they can all work on it simulateneously. Map reduce usually first starts with a process that splits the data into partitions. Then it will pass each partition using shared memory, pipes, or some other IPC method, and in the case of Hadoop a "distributed file system", and allow multiple processes, threads, and/or processors to work on each partition of the data. It is a huge field right now, especially due to the rise in data science, and big data.

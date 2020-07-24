@@ -1,0 +1,12 @@
+(1). How does the child know that it has received all the data.
+
+// Parent
+while(getline(&str))
+  send(str);
+
+// Child
+Parent counts total amount of data to send, and lets child know
+Add a terminator
+
+(2). Map Reduce
+:
